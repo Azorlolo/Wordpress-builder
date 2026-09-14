@@ -212,11 +212,10 @@ check_github_ssh_access() {
 
     info "Vérification de l'accès SSH à GitHub..."
 
-    # ssh -T renvoie toujours un code de sortie non nul (pas de shell alloué),
-    # même en cas de succès : on désactive donc temporairement 'set -e'.
-    set +e
-    ssh_output=$(ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1)
-    set -e
+    # 'set +e' seul ne suffit pas : le trap ERR se déclenche même avec
+    # 'set +e' pour une simple commande qui échoue. Seul '|| true' (ou un
+    # test if) empêche réellement le trap de se déclencher ici.
+    ssh_output=$(ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1) || true
 
     if echo "$ssh_output" | grep -qi "successfully authenticated"; then
         success "Accès SSH à GitHub confirmé"
@@ -241,7 +240,12 @@ Vérifications possibles :
    pbcopy < ~/.ssh/id_ed25519.pub
    -> GitHub > Settings > SSH and GPG keys > New SSH key
 
-3. As-tu bien accès au dépôt du boilerplate (droits collaborateur, ou SSO
+3. La clé chargée dans l'agent est-elle bien celle enregistrée sur GitHub ?
+   Vérifier qu'aucun ~/.ssh/config ne force une autre IdentityFile pour
+   'github.com', et que le contenu de ~/.ssh/id_ed25519.pub correspond
+   bien à une clé listée dans GitHub > Settings > SSH and GPG keys.
+
+4. As-tu bien accès au dépôt du boilerplate (droits collaborateur, ou SSO
    d'organisation à autoriser pour cette clé) ?
 
 Relance ce script une fois l'accès confirmé avec :
