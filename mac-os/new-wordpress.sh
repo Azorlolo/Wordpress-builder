@@ -207,6 +207,47 @@ Démarre Docker Desktop, attends qu'il indique qu'il est prêt, puis relance ce 
     success "Docker Desktop est démarré"
 }
 
+check_github_ssh_access() {
+    local ssh_output
+
+    info "Vérification de l'accès SSH à GitHub..."
+
+    # ssh -T renvoie toujours un code de sortie non nul (pas de shell alloué),
+    # même en cas de succès : on désactive donc temporairement 'set -e'.
+    set +e
+    ssh_output=$(ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1)
+    set -e
+
+    if echo "$ssh_output" | grep -qi "successfully authenticated"; then
+        success "Accès SSH à GitHub confirmé"
+        return
+    fi
+
+    error "Impossible de s'authentifier en SSH sur GitHub (git@github.com).
+
+Sortie de 'ssh -T git@github.com' :
+${ssh_output}
+
+Vérifications possibles :
+
+1. Une clé SSH existe-t-elle et est-elle chargée ?
+   ls -al ~/.ssh
+   ssh-add -l
+
+2. Si aucune clé n'existe, en générer une puis l'ajouter sur GitHub :
+   ssh-keygen -t ed25519 -C \"ton-email@tealforge.com\"
+   eval \"\$(ssh-agent -s)\"
+   ssh-add ~/.ssh/id_ed25519
+   pbcopy < ~/.ssh/id_ed25519.pub
+   -> GitHub > Settings > SSH and GPG keys > New SSH key
+
+3. As-tu bien accès au dépôt du boilerplate (droits collaborateur, ou SSO
+   d'organisation à autoriser pour cette clé) ?
+
+Relance ce script une fois l'accès confirmé avec :
+   ssh -T git@github.com"
+}
+
 # ============================================================
 # DÉMARRAGE
 # ============================================================
@@ -251,6 +292,7 @@ else
 fi
 
 check_docker_running
+check_github_ssh_access
 
 echo
 success "Toutes les dépendances nécessaires sont disponibles"
