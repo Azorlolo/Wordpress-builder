@@ -153,7 +153,7 @@ pour arrêter l'environnement.
 ### Compte administrateur
 
 - Utilisateur : `tf-admin`
-- Email : `dev@tealforge.local`
+- Email : `admin@tealforge.com`
 - Mot de passe : généré aléatoirement (18 caractères, affiché une seule fois par le script)
 
 ### Git
