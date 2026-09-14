@@ -488,9 +488,13 @@ success "Core WordPress téléchargé"
 
 info "Création de wp-config.php..."
 
+# DDEV génère automatiquement un wp-config.php au démarrage lorsque le type
+# de projet est 'wordpress' (quickstart intégré) : --force permet de
+# l'écraser proprement plutôt que d'échouer si le fichier existe déjà.
 ddev wp config create \
     --path=/var/www/html/${WP_PATH} \
-    --dbname=db --dbuser=db --dbpass=db --dbhost=db
+    --dbname=db --dbuser=db --dbpass=db --dbhost=db \
+    --force
 
 success "wp-config.php créé"
 
