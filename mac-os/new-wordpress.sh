@@ -213,11 +213,23 @@ Démarre Docker Desktop, attends qu'il indique qu'il est prêt, puis relance ce 
 
 title "INSTALLATION WORDPRESS + TIMBER (BOILERPLATE TEALFORGE)"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATE_README="$SCRIPT_DIR/templates/README.md"
+
 info "Script lancé"
 info "Répertoire de création : $(pwd)"
 info "Script : ${BASH_SOURCE[0]}"
 
 echo
+
+if [ ! -f "$TEMPLATE_README" ]; then
+    error "Template README introuvable : $TEMPLATE_README
+
+Ce script a besoin du sous-dossier 'templates/' situé juste à côté de lui.
+Assure-toi d'avoir téléchargé le dossier entier (mac-os/) et non uniquement new-wordpress.sh."
+fi
+
+success "Template README trouvé : $TEMPLATE_README"
 
 success "Initialisation terminée"
 
@@ -558,55 +570,20 @@ fi
 
 step "9/11 — Remplacement du README du projet"
 
-info "Génération d'un README propre au projet..."
+cp "$TEMPLATE_README" README.md
 
-cat > README.md <<EOF
-# ${SITE_TITLE}
+info "Remplacement des variables dans le README..."
 
-Site WordPress basé sur le boilerplate Tealforge (Timber + DDEV).
+sed "${SED_INPLACE[@]}" \
+    -e "s#{{SITE_TITLE}}#${SITE_TITLE}#g" \
+    -e "s#{{PROJECT_SLUG}}#${PROJECT_SLUG}#g" \
+    -e "s#{{DDEV_DOMAIN}}#${DDEV_DOMAIN}#g" \
+    -e "s#{{ADMIN_USER}}#${ADMIN_USER}#g" \
+    -e "s#{{ADMIN_EMAIL}}#${ADMIN_EMAIL}#g" \
+    README.md
 
-## Environnement local
-
-\`\`\`
-ddev start
-ddev launch
-\`\`\`
-
-- Site      : https://${DDEV_DOMAIN}
-- Admin     : https://${DDEV_DOMAIN}/wp-admin
-
-## Compte administrateur (local)
-
-- Utilisateur : ${ADMIN_USER}
-- Email       : ${ADMIN_EMAIL}
-- Mot de passe : voir gestionnaire de mots de passe (généré à l'installation, à changer si besoin)
-
-## Développement
-
-Le thème se trouve dans :
-
-\`\`\`
-${THEME_PATH}
-\`\`\`
-
-Commandes principales :
-
-\`\`\`
-ddev launch
-bin/status
-bin/check
-bin/build
-bin/ci-check
-\`\`\`
-
-## Documentation
-
-Les règles de développement du boilerplate sont dans [AGENTS.md](AGENTS.md).
-Les informations propres au projet sont dans [PROJECT.md](PROJECT.md).
-La documentation détaillée (architecture, sections ACF, déploiement, dépannage) est dans [docs/](docs).
-EOF
-
-success "README.md remplacé par la version projet"
+success "README du projet remplacé par le template Tealforge"
+success "Variables du README injectées (SITE_TITLE, PROJECT_SLUG, DDEV_DOMAIN, ADMIN_USER, ADMIN_EMAIL)"
 
 # ============================================================
 # 10. INITIALISATION GIT

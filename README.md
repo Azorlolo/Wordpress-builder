@@ -21,14 +21,19 @@ PHP, Composer, Node.js et WP-CLI ne sont **pas** à installer sur le poste : ils
 
 ---
 
-## Télécharger le script
+## Télécharger le dossier du script
 
-Contrairement au script Laravel, ce script n'a besoin d'aucun sous-dossier `templates/` : le README injecté dans chaque projet généré est directement intégré au fichier `.sh`.
+Le dépôt contient un dossier par système d'exploitation (`mac-os`, `windows`, etc.). Télécharge celui qui correspond à ton OS.
 
-⚠️ Il te suffit donc de récupérer le seul fichier :
+⚠️ **Il est important de télécharger le dossier entier, et non pas uniquement le fichier `new-wordpress.sh`.** Le script a besoin du sous-dossier `templates/` (qui contient le README injecté dans chaque projet généré) situé juste à côté de lui. Si tu ne récupères que le `.sh` isolé, le script s'arrêtera dès son lancement avec une erreur `Template README introuvable`.
+
+Structure attendue une fois téléchargée :
 
 ```text
-new-wordpress-tealforge.sh
+mac-os/
+├── new-wordpress.sh
+└── templates/
+    └── README.md
 ```
 
 ---
@@ -40,7 +45,7 @@ new-wordpress-tealforge.sh
 Exemple de chemin utilisé ici :
 
 ```text
-/Users/tealforge/Dev/Scripts/new-wordpress-tealforge.sh
+/Users/tealforge/Dev/Scripts/mac-os/new-wordpress.sh
 ```
 
 ##
@@ -48,7 +53,7 @@ Exemple de chemin utilisé ici :
 Lancer la commande dans un terminal quelconque
 
 ```bash
-chmod +x /Users/tealforge/Dev/Scripts/new-wordpress-tealforge.sh
+chmod +x /Users/tealforge/Dev/Scripts/mac-os/new-wordpress.sh
 ```
 
 ```bash
@@ -58,7 +63,7 @@ nano ~/.zshrc
 Ajouter dans le fichier :
 
 ```bash
-alias wordpress-tealforge="/Users/tealforge/Dev/Scripts/new-wordpress-tealforge.sh"
+alias wordpress-tealforge="/Users/tealforge/Dev/Scripts/mac-os/new-wordpress.sh"
 ```
 
 ```bash
@@ -158,6 +163,10 @@ pour arrêter l'environnement.
 - Aucun remote ajouté automatiquement
 - `web/wp-config.php` et `deploy.local.env` sont ignorés par Git
 
+### README du projet généré
+
+Le script remplace le README du boilerplate par celui de `templates/README.md`, avec les variables du projet déjà injectées (titre, domaine DDEV, identifiant/email admin). Ce README explique notamment comment recréer l'environnement et le compte administrateur sur un autre poste après un clone.
+
 ### Développement
 
 Commandes principales fournies par le boilerplate :
@@ -205,7 +214,7 @@ git branch
 
 ---
 
-> ℹ️ Pour reprendre le projet sur un autre poste (base, médias, plugins), voir la section « Reprise d'un projet existant » du README du boilerplate.
+> ℹ️ Pour reprendre le projet sur un autre poste (base, médias, plugins), voir la section « Reprise du projet sur un autre poste » du README généré dans le projet (`templates/README.md`).
 
 ---
 
