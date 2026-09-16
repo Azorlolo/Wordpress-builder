@@ -10,7 +10,7 @@ BOILERPLATE_REPO_URL="git@github.com:ZeFranck69/boilerplate-wordpress-tealforge.
 
 WP_LOCALE="fr_FR"
 ADMIN_USER="tf-admin"
-ADMIN_EMAIL="admin@tealforge.com"
+ADMIN_EMAIL="dev@tealforge.local"
 PASSWORD_LENGTH=18
 GIT_INITIAL_COMMIT="Initialisation du site WordPress + Timber - Conçu par Tealforge"
 
@@ -294,6 +294,24 @@ else
     warning "mkcert n'est pas détecté (recommandé pour les certificats HTTPS locaux)."
     info "Installation : brew install mkcert && mkcert -install"
 fi
+
+info "Vérification de l'identité Git..."
+
+GIT_USER_NAME=$(git config --get user.name || true)
+GIT_USER_EMAIL=$(git config --get user.email || true)
+
+if [ -z "$GIT_USER_NAME" ] || [ -z "$GIT_USER_EMAIL" ]; then
+    error "L'identité Git n'est pas configurée.
+
+Configure-la avec :
+
+git config --global user.name \"Prénom Nom\"
+git config --global user.email \"email@tealforge.com\"
+
+Puis relance le script."
+fi
+
+success "Identité Git : $GIT_USER_NAME <$GIT_USER_EMAIL>"
 
 check_docker_running
 check_github_ssh_access
@@ -641,23 +659,7 @@ success "Variables du README injectées (SITE_TITLE, PROJECT_SLUG, DDEV_DOMAIN, 
 
 step "10/11 — Initialisation du dépôt Git"
 
-info "Vérification de l'identité Git..."
-
-GIT_USER_NAME=$(git config --get user.name || true)
-GIT_USER_EMAIL=$(git config --get user.email || true)
-
-if [ -z "$GIT_USER_NAME" ] || [ -z "$GIT_USER_EMAIL" ]; then
-    error "L'identité Git n'est pas configurée.
-
-Configure-la avec :
-
-git config --global user.name \"Prénom Nom\"
-git config --global user.email \"email@tealforge.com\"
-
-Puis relance le script."
-fi
-
-success "Identité Git : $GIT_USER_NAME <$GIT_USER_EMAIL>"
+info "Identité Git : $GIT_USER_NAME <$GIT_USER_EMAIL> (déjà vérifiée à l'étape 1/11)"
 
 echo
 
