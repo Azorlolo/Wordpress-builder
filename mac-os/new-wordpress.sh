@@ -252,6 +252,33 @@ Relance ce script une fois l'accès confirmé avec :
    ssh -T git@github.com"
 }
 
+check_not_inside_existing_project() {
+    local dir="$PWD"
+
+    info "Vérification que le dossier courant n'est pas déjà un projet généré..."
+
+    while [ "$dir" != "/" ]; do
+        if [ -f "$dir/.ddev/config.yaml" ] && [ -f "$dir/PROJECT.md" ]; then
+            error "Tu es déjà à l'intérieur d'un projet Tealforge généré :
+
+  $dir
+
+Ce script doit être lancé depuis ton dossier de projets habituel (ex: ~/Dev),
+jamais depuis l'intérieur d'un projet existant : il créerait un boilerplate
+imbriqué dans un projet déjà en place, avec un état DDEV incohérent.
+
+Déplace-toi d'abord vers ton dossier de projets, puis relance le script :
+
+   cd ~/Dev
+   wordpress-tealforge"
+        fi
+
+        dir="$(dirname "$dir")"
+    done
+
+    success "Dossier courant valide pour créer un nouveau projet"
+}
+
 # ============================================================
 # DÉMARRAGE
 # ============================================================
@@ -275,6 +302,8 @@ Assure-toi d'avoir téléchargé le dossier entier (mac-os/) et non uniquement n
 fi
 
 success "Template README trouvé : $TEMPLATE_README"
+
+check_not_inside_existing_project
 
 success "Initialisation terminée"
 
