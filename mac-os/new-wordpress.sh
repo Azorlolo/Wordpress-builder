@@ -10,7 +10,7 @@ BOILERPLATE_REPO_URL="git@github.com:ZeFranck69/boilerplate-wordpress-tealforge.
 
 WP_LOCALE="fr_FR"
 ADMIN_USER="tf-admin"
-ADMIN_EMAIL="dev@tealforge.local"
+ADMIN_EMAIL="admin@tealforge.com"
 PASSWORD_LENGTH=18
 GIT_INITIAL_COMMIT="Initialisation du site WordPress + Timber - Conçu par Tealforge"
 
